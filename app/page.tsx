@@ -1,65 +1,194 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState } from 'react';
+import { Material, Supplier, Purchase, Snapshot, TabId, ModalType } from '@/app/types';
+import { Icons } from '@/app/components/Icons';
+import { Modal } from '@/app/components/Modal';
+import { MaterialForm } from '@/app/components/MaterialForm';
+import { SupplierForm } from '@/app/components/SupplierForm';
+import { PurchaseForm } from '@/app/components/PurchaseForm';
+import { SnapshotForm } from '@/app/components/SnapshotForm';
+import { Dashboard } from '@/app/components/Dashboard';
+import { Materials } from '@/app/components/Materials';
+import { Suppliers } from '@/app/components/Suppliers';
+import { Purchases } from '@/app/components/Purchases';
+import { StockCheck } from '@/app/components/StockCheck';
+import { Header } from '@/app/components/Header';
+import { BottomNav } from '@/app/components/BottomNav';
+
+// Mock data
+const initialMaterials: Material[] = [
+  { id: 1, name: 'Cement', unit: 'bags', category: 'Binding', reorderLevel: 50 },
+  { id: 2, name: 'Sand', unit: 'cubic ft', category: 'Aggregate', reorderLevel: 100 },
+  { id: 3, name: 'Steel Rods (12mm)', unit: 'kg', category: 'Reinforcement', reorderLevel: 200 },
+  { id: 4, name: 'Bricks', unit: 'pieces', category: 'Masonry', reorderLevel: 1000 },
+];
+
+const initialSuppliers: Supplier[] = [
+  { id: 1, name: 'Ramesh Building Materials', phone: '9876543210', address: 'Bhadrak' },
+  { id: 2, name: 'Odisha Steel Traders', phone: '9123456789', address: 'Cuttack' },
+];
+
+const initialPurchases: Purchase[] = [
+  { id: 1, supplierId: 1, materialId: 1, quantity: 100, rate: 380, date: '2024-12-10' },
+  { id: 2, supplierId: 2, materialId: 3, quantity: 500, rate: 72, date: '2024-12-10' },
+  { id: 3, supplierId: 1, materialId: 2, quantity: 200, rate: 45, date: '2024-12-11' },
+];
+
+const initialSnapshots: Snapshot[] = [
+  { id: 1, materialId: 1, quantity: 45, date: '2024-12-11' },
+  { id: 2, materialId: 2, quantity: 150, date: '2024-12-11' },
+  { id: 3, materialId: 3, quantity: 180, date: '2024-12-11' },
+  { id: 4, materialId: 4, quantity: 800, date: '2024-12-11' },
+];
+
+export default function InventoryApp() {
+  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
+  const [materials, setMaterials] = useState<Material[]>(initialMaterials);
+  const [suppliers, setSuppliers] = useState<Supplier[]>(initialSuppliers);
+  const [purchases, setPurchases] = useState<Purchase[]>(initialPurchases);
+  const [snapshots, setSnapshots] = useState<Snapshot[]>(initialSnapshots);
+  const [showModal, setShowModal] = useState<ModalType>(null);
+  const [editItem, setEditItem] = useState<Material | Supplier | { materialId: number; quantity: number } | null>(null);
+
+  const handleEditMaterial = (material: Material) => {
+    setEditItem(material);
+    setShowModal('material');
+  };
+
+  const handleEditSupplier = (supplier: Supplier) => {
+    setEditItem(supplier);
+    setShowModal('supplier');
+  };
+
+  const handleUpdateStock = (materialId: number, currentQuantity: number) => {
+    setEditItem({ materialId, quantity: currentQuantity });
+    setShowModal('snapshot');
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(null);
+    setEditItem(null);
+  };
+
+  const getAddAction = (): (() => void) | undefined => {
+    switch (activeTab) {
+      case 'materials':
+        return () => {
+          setEditItem(null);
+          setShowModal('material');
+        };
+      case 'suppliers':
+        return () => {
+          setEditItem(null);
+          setShowModal('supplier');
+        };
+      case 'purchases':
+        return () => setShowModal('purchase');
+      default:
+        return undefined;
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen bg-gray-50 pb-20">
+      <style>{`
+        @keyframes slideUp {
+          from { transform: translateY(100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slideUp { animation: slideUp 0.3s ease-out; }
+      `}</style>
+
+      {/* Header */}
+      <Header activeTab={activeTab} onAddClick={getAddAction()} />
+
+      {/* Content */}
+      <main className="px-4 py-4">
+        {activeTab === 'dashboard' && (
+          <Dashboard
+            materials={materials}
+            suppliers={suppliers}
+            purchases={purchases}
+            snapshots={snapshots}
+          />
+        )}
+        {activeTab === 'materials' && (
+          <Materials materials={materials} onEdit={handleEditMaterial} />
+        )}
+        {activeTab === 'suppliers' && (
+          <Suppliers suppliers={suppliers} purchases={purchases} onEdit={handleEditSupplier} />
+        )}
+        {activeTab === 'purchases' && (
+          <Purchases materials={materials} suppliers={suppliers} purchases={purchases} />
+        )}
+        {activeTab === 'stockcheck' && (
+          <StockCheck materials={materials} snapshots={snapshots} onUpdateStock={handleUpdateStock} />
+        )}
       </main>
+
+      {/* FAB for quick purchase on dashboard */}
+      {activeTab === 'dashboard' && (
+        <button
+          onClick={() => setShowModal('purchase')}
+          className="fixed bottom-24 right-4 w-14 h-14 bg-gray-900 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-700 transition-colors z-10"
+        >
+          <Icons.Plus />
+        </button>
+      )}
+
+      {/* Bottom Navigation */}
+      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Modals */}
+      {showModal === 'material' && (
+        <Modal
+          title={editItem && 'id' in editItem ? 'Edit Material' : 'Add Material'}
+          onClose={handleCloseModal}
+        >
+          <MaterialForm
+            editItem={editItem && 'unit' in editItem ? editItem as Material : null}
+            materials={materials}
+            setMaterials={setMaterials}
+            onClose={handleCloseModal}
+          />
+        </Modal>
+      )}
+      {showModal === 'supplier' && (
+        <Modal
+          title={editItem && 'id' in editItem ? 'Edit Supplier' : 'Add Supplier'}
+          onClose={handleCloseModal}
+        >
+          <SupplierForm
+            editItem={editItem && 'phone' in editItem ? editItem as Supplier : null}
+            suppliers={suppliers}
+            setSuppliers={setSuppliers}
+            onClose={handleCloseModal}
+          />
+        </Modal>
+      )}
+      {showModal === 'purchase' && (
+        <Modal title="Log Purchase" onClose={handleCloseModal}>
+          <PurchaseForm
+            materials={materials}
+            suppliers={suppliers}
+            purchases={purchases}
+            setPurchases={setPurchases}
+            onClose={handleCloseModal}
+          />
+        </Modal>
+      )}
+      {showModal === 'snapshot' && (
+        <Modal title="Update Stock" onClose={handleCloseModal}>
+          <SnapshotForm
+            editItem={editItem && 'materialId' in editItem ? editItem as { materialId: number; quantity: number } : null}
+            materials={materials}
+            snapshots={snapshots}
+            setSnapshots={setSnapshots}
+            onClose={handleCloseModal}
+          />
+        </Modal>
+      )}
     </div>
   );
 }

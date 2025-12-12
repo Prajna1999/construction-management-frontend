@@ -15,7 +15,9 @@ export function PurchaseForm({ materials, suppliers, purchases, setPurchases, on
     materialId: '',
     quantity: '',
     rate: '',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    projectName: '',
+    site: ''
   });
 
   const handleSubmit = () => {
@@ -87,6 +89,26 @@ export function PurchaseForm({ materials, suppliers, purchases, setPurchases, on
           value={form.date}
           onChange={e => setForm({ ...form, date: e.target.value })}
           className="w-full px-3 py-2 border border-gray-200 rounded-md focus:border-gray-900 focus:outline-none"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+        <input
+          type="text"
+          value={form.projectName}
+          onChange={e => setForm({ ...form, projectName: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-200 rounded-md focus:border-gray-900 focus:outline-none"
+          placeholder="Main Building Construction"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Site</label>
+        <input
+          type="text"
+          value={form.site}
+          onChange={e => setForm({ ...form, site: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-200 rounded-md focus:border-gray-900 focus:outline-none"
+          placeholder="Plot No. 45, Sector 12"
         />
       </div>
       <button

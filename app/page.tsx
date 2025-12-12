@@ -30,9 +30,9 @@ const initialSuppliers: Supplier[] = [
 ];
 
 const initialPurchases: Purchase[] = [
-  { id: 1, supplierId: 1, materialId: 1, quantity: 100, rate: 380, date: '2024-12-10' },
-  { id: 2, supplierId: 2, materialId: 3, quantity: 500, rate: 72, date: '2024-12-10' },
-  { id: 3, supplierId: 1, materialId: 2, quantity: 200, rate: 45, date: '2024-12-11' },
+  { id: 1, supplierId: 1, materialId: 1, quantity: 100, rate: 380, date: '2024-12-10', projectName: 'Residential Complex A', site: 'Plot No. 12, Bhadrak' },
+  { id: 2, supplierId: 2, materialId: 3, quantity: 500, rate: 72, date: '2024-12-10', projectName: 'Commercial Tower', site: 'Link Road, Cuttack' },
+  { id: 3, supplierId: 1, materialId: 2, quantity: 200, rate: 45, date: '2024-12-11', projectName: 'Residential Complex A', site: 'Plot No. 12, Bhadrak' },
 ];
 
 const initialSnapshots: Snapshot[] = [

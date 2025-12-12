@@ -1,6 +1,6 @@
-import React from 'react';
 import { Supplier, Purchase } from '@/app/types';
 import { Icons } from './Icons';
+import { EmptyState } from './EmptyState';
 
 interface SuppliersProps {
   suppliers: Supplier[];
@@ -9,6 +9,16 @@ interface SuppliersProps {
 }
 
 export function Suppliers({ suppliers, purchases, onEdit }: SuppliersProps) {
+  if (suppliers.length === 0) {
+    return (
+      <EmptyState
+        icon={Icons.Users}
+        title="No suppliers added"
+        description="Add suppliers to maintain contact information and track your purchase history with each vendor."
+      />
+    );
+  }
+
   return (
     <div className="space-y-3">
       {suppliers.map(s => {

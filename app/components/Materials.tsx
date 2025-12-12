@@ -1,6 +1,6 @@
-import React from 'react';
 import { Material } from '@/app/types';
 import { Icons } from './Icons';
+import { EmptyState } from './EmptyState';
 
 interface MaterialsProps {
   materials: Material[];
@@ -8,6 +8,16 @@ interface MaterialsProps {
 }
 
 export function Materials({ materials, onEdit }: MaterialsProps) {
+  if (materials.length === 0) {
+    return (
+      <EmptyState
+        icon={Icons.Package}
+        title="No materials added"
+        description="Add materials to start tracking your construction inventory. Include details like units, categories, and reorder levels."
+      />
+    );
+  }
+
   return (
     <div className="space-y-3">
       {materials.map(m => (

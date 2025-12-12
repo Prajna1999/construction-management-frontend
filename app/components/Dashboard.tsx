@@ -1,6 +1,6 @@
-import React from 'react';
 import { Material, Supplier, Purchase, Snapshot } from '@/app/types';
 import { Icons } from './Icons';
+import { EmptyState } from './EmptyState';
 import { getCurrentStock } from './utils';
 
 interface DashboardProps {
@@ -16,6 +16,17 @@ export function Dashboard({ materials, suppliers, purchases, snapshots }: Dashbo
     const currentStock = getCurrentStock(m.id, snapshots);
     return currentStock < m.reorderLevel;
   });
+
+  // If no data at all, show empty state
+  if (materials.length === 0) {
+    return (
+      <EmptyState
+        icon={Icons.Package}
+        title="No materials yet"
+        description="Start by adding materials to your inventory to track stock levels and manage purchases."
+      />
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -69,24 +80,33 @@ export function Dashboard({ materials, suppliers, purchases, snapshots }: Dashbo
 
       <div className="bg-white border border-gray-200 rounded-lg p-4">
         <h3 className="font-medium text-gray-900 mb-3">Recent Purchases</h3>
-        <div className="space-y-2">
-          {purchases.slice(-3).reverse().map(p => {
-            const material = materials.find(m => m.id === p.materialId);
-            const supplier = suppliers.find(s => s.id === p.supplierId);
-            return (
-              <div key={p.id} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                <div>
-                  <div className="text-sm font-medium text-gray-900">{material?.name}</div>
-                  <div className="text-xs text-gray-500">{supplier?.name} • {p.date}</div>
+        {purchases.length === 0 ? (
+          <div className="text-center py-8">
+            <div className="flex justify-center mb-3 text-gray-300">
+              <Icons.ShoppingCart />
+            </div>
+            <p className="text-sm text-gray-500">No purchases recorded yet</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {purchases.slice(-3).reverse().map(p => {
+              const material = materials.find(m => m.id === p.materialId);
+              const supplier = suppliers.find(s => s.id === p.supplierId);
+              return (
+                <div key={p.id} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{material?.name}</div>
+                    <div className="text-xs text-gray-500">{supplier?.name} • {p.date}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-medium text-gray-900">{p.quantity} {material?.unit}</div>
+                    <div className="text-xs text-gray-500">₹{p.rate}/{material?.unit}</div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium text-gray-900">{p.quantity} {material?.unit}</div>
-                  <div className="text-xs text-gray-500">₹{p.rate}/{material?.unit}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

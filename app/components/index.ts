@@ -1,6 +1,7 @@
 // Re-export all components for easier imports
 export { Icons } from './Icons';
 export { Modal } from './Modal';
+export { EmptyState } from './EmptyState';
 export { MaterialForm } from './MaterialForm';
 export { SupplierForm } from './SupplierForm';
 export { PurchaseForm } from './PurchaseForm';

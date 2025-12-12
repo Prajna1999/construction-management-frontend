@@ -20,6 +20,8 @@ export interface Purchase {
   quantity: number;
   rate: number;
   date: string;
+  projectName: string;
+  site: string;
 }
 
 export interface Snapshot {

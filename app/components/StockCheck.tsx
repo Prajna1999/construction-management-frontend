@@ -1,5 +1,6 @@
-import React from 'react';
 import { Material, Snapshot } from '@/app/types';
+import { Icons } from './Icons';
+import { EmptyState } from './EmptyState';
 import { getCurrentStock } from './utils';
 
 interface StockCheckProps {
@@ -9,6 +10,16 @@ interface StockCheckProps {
 }
 
 export function StockCheck({ materials, snapshots, onUpdateStock }: StockCheckProps) {
+  if (materials.length === 0) {
+    return (
+      <EmptyState
+        icon={Icons.Clipboard}
+        title="No materials to check"
+        description="Add materials to your inventory before updating stock levels. This helps track consumption and trigger low-stock alerts."
+      />
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
